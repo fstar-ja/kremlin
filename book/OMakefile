@@ -1,0 +1,8 @@
+.PHONY: clean
+.DEFAULT: _build/html/index.html
+
+_build/html/index.html: conf.py index.rst Introduction.fst  LowStar.fst RingBuffer.fst
+	make html
+
+clean:
+	make clean

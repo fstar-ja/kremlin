@@ -1,6 +1,11 @@
 KreMLin
 -------
 
+このリポジトリは[KreMLin](https://github.com/FStarLang/kremlin)に関するドキュメントの日本語訳置き場です。
+翻訳文書はxxxで公開しています。
+
+## 元のREADME
+
 [![Build Status](https://travis-ci.org/FStarLang/kremlin.svg?branch=master)](https://travis-ci.org/FStarLang/kremlin)
 
 KreMLin is a tool that extracts an F\* program to readable C code. If the F\*

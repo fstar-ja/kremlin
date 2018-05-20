@@ -116,54 +116,45 @@ let main (): Stack C.exit_code
   pop_frame ();
   C.EXIT_SUCCESS
 
-/// This example showcases several features of Low*. We first present the code from
-/// a high-level point of view, then show how it compiles to C. We leave a detailed
-/// discussion of Low* to the subsequent chapters of this tutorial.
+/// この例は Low* のいくつかの機能を含んでいます。
+/// まずはじめに高いレベルからのポイントを示します。
+/// それからC言語コードにコンパイルする方法を説明します。
+/// Low* の詳細な議論はこのチュートリアルの残りの章で説明します。
 ///
-/// The code starts by opening several modules that are part of the "Low*
-/// standard library".
+/// このコードは "標準Low*ライブラリ" の一部であるいくつかのモジュールを開きます。
 ///
-/// - ``Buffer`` is our model of stack- and heap- allocated C arrays
-///   (described in :ref:`buffer-library`)
-/// - ``Seq`` is the sequence abstraction from the F* standard library, which
-///   ``Buffer`` uses to reflect the contents of a given buffer in a given heap
-///   at the proof level
-/// - ``Modifies`` provides a universal modifies clause over buffers, references
-///   and regions (described in :ref:`modifies-library`)
-/// - ``UInt32`` is a model of the C11 ``uint32_t`` type, reflected at the proof
-///   level using natural numbers (described in :ref:`machine-integers`)
-/// - ``HyperStack`` is our model of the C memory layout (described in
-///   :ref:`memory-model`)
-/// - ``C`` and ``C.Loops`` expose some C concepts to F* (described in
-///   :ref:`c-library`)
+/// - ``Buffer`` はスタック/ヒープに確保されたC言語配列のモデルです
+///   (:ref:`buffer-library` で解説します)
+/// - ``Seq`` は標準F*ライブラリにおけるシーケンス抽象で、
+///   これは証明レベルでヒープ中のバッファの中身を扱うために ``Buffer`` を使います
+/// - ``Modifies`` はバッファ、参照そしてリージョン上に全称化された modifies 節を提供します (:ref:`modifies-library` で解説します)
+/// - ``UInt32`` は C11 ``uint32_t`` 型のモデルで、証明レベルでは自然数と考えます (:ref:`machine-integers` で解説します)
+/// - ``HyperStack`` はC言語メモリレイアウトのモデルです (:ref:`memory-model` で解説します)
+/// - ``C`` and ``C.Loops`` いくつかのC言語の概念を F* に公開します (:ref:`c-library` で解説します)
 ///
-/// The first definition is a lemma over sequences: if two sequences are equal over
-/// the slice ``[0; i)`` and their ``i``\ -th element is equal, then they are equal
-/// over the slice ``[0; i + 1)``. This lemma is required to prove the functional
-/// correctness of ``memcpy``. Lemmas are erased and do not appear in the generated
-/// code, so it is safe to mix lemmas with Low* code.
+/// 最初の定義はシーケンスに対する補題です:
+/// もし2つのシーケンスがスライス ``[0; i)`` 上で等しくかつ、それら ``i`` 番目の要素が等しいなら、それらのシーケンスはスライス ``[0; i + 1)`` 上で等しくなります。
+/// この補題は ``memcpy`` の関数的な正しさを証明するために必要です。
+/// 補題は消去され、生成されたコードには現われません。
+/// そのため Low* コードに補題を安全に混ぜることができます。
 ///
-/// Next, then ``memcpy`` function is defined and annotated with pre- and
-/// post-conditions, using liveness and disjointness predicates. The post-condition
-/// states that after calling ``memcpy src dst len``, the destination and the source
-/// have the same contents up to index ``len``.
+/// 次に、``memcpy`` 関数が定義され、活性と互いに素な述語を使った事前/事後条件で注釈されています。
+/// 事後条件は ``memcpy src dst len`` が呼び出された後において、
+/// コピー先とコピー元がインデックス ``len`` まで同じ内容物を持つことを表明しています。
 ///
-/// The implementation of ``memcpy`` uses a C-style ``for`` loop with a loop
-/// invariant and a loop body. Alternatively, one could write a recursive function,
-/// relying on the C compiler to hopefully perform tail-call optimization.
+/// ``memcpy`` の実装はC言語スタイルのループ不変条件とループ本体をともなった ``for`` ループを使っています。
+/// あるいは、C言語コンパイラが末尾再帰最適化をしてくれることを願って、再帰関数を書くこともできます。
 ///
-/// Finally, the ``main`` function uses ``push_frame`` and ``pop_frame``, two
-/// combinators from the memory model that indicate that this code conceptually
-/// executes in a new stack frame. In this new stack frame, two test arrays are
-/// allocated on the stack. These are arrays of 64-bit unsigned integers, as denoted
-/// by the ``UL`` Low* suffix for machine integers. The ``memcpy`` function is
-/// called over these two arrays. From a verification perspective, since the stack
-/// frame is freed after calling ``main``, we can successfully state that ``main``
-/// modifies no buffer.
+/// 最後に、``main`` 関数は ``push_frame`` と ``pop_frame`` を使います。
+/// メモリモデルにおけるこの2つのコンビネータは概念上、このコードが新しいスタックフレームで実行されることを示しています。
+/// この新しいスタックフレームにおいて、2つのテスト用配列がスタックに確保されます。
+/// 機種依存整数を表わす Low* の接尾辞 ``UL`` で示される通り、64ビット符号なし整数の配列になります。
+/// ``memcpy`` 関数はこれら2つの配列をともなって呼び出されます。
+/// 検証の観点からは、``main`` が呼び出された後にこのスタックフレームは解放されるので、
+/// ``main`` がバッファを変更しないことを示せます。
 ///
-/// Leaving an in-depth explanation of these concepts to later sections, it
-/// suffices to say, for now, that one can invoke the KreMLin compiler to turn
-/// this code into C:
+/// これらの概念の詳細な説明は後の章で説明するとして、現時点ではこれで十分です。
+/// 上記のコードをC言語に変換するために、KreMLin コンパイラを起動できます:
 ///
 /// .. code-block:: bash
 ///

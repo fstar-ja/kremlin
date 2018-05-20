@@ -6,7 +6,7 @@
 KreMLin ユーザマニュアル
 =======================
 
-(訳注: この日本語マニュアルは [The KreMLin user manual and documentation](https://fstarlang.github.io/lowstar/html/) の翻訳です。 翻訳に参加するには [翻訳リポジトリ](https://github.com/fstar-ja/kremlin) を参照してください。)
+(訳注: この日本語マニュアルは `The KreMLin user manual and documentation <https://fstarlang.github.io/lowstar/html/>`_ の翻訳です。 翻訳に参加するには `翻訳リポジトリ <https://github.com/fstar-ja/kremlin>`_ を参照してください。)
 
 .. toctree::
    :maxdepth: 2

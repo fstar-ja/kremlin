@@ -2,7 +2,7 @@ KreMLin
 -------
 
 このリポジトリは[KreMLin](https://github.com/FStarLang/kremlin)に関するドキュメントの日本語訳置き場です。
-翻訳文書はxxxで公開しています。
+翻訳文書は[http://fstar-ja.metasepi.org/doc/kremlin-book/](http://fstar-ja.metasepi.org/doc/kremlin-book/)で公開しています。
 
 ## 元のREADME
 

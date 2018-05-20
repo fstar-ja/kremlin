@@ -8,3 +8,7 @@ tags
 *~
 book/_build
 fstar-mode.el
+.omakedb
+.omakedb.lock
+OMakefile.omc
+OMakeroot.omc

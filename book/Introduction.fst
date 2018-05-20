@@ -9,41 +9,42 @@ let _ = LowStar.test_get
 /// .. fixme-authors::
 ///     JP Jonathan Protzenko
 ///
-/// Introduction
-/// ============
+/// 導入
+/// ====
 ///
-/// This manual documents Low*, a subset of F* that enjoys compilation to C
-/// through its companion compiler KreMLin. As such, Kre\ **ML**\ in offers an
-/// alternative to OCa\ **ML** for extracting and running F* programs (hence the
-/// name).
+/// このドキュメントは F* のサブセットである Low* を解説します。
+/// この Low* は KreMLin コンパイラを通じてC言語にコンパイルされます。
+/// 名前が表わす通り Kre\ **ML**\ は F* プログラムをエクストラクトして実行するための
+/// OCa\ **ML** の代替です。
 ///
-/// Low* is not only a language subset, but also a set of F* libraries that
-/// model a *curated* set of C features: the C memory model, stack- and
-/// heap-allocated arrays, machine integers, C string literals, and a few
-/// system-level functions from the C standard library.
+/// Low* は単なる言語のサブセットであるだけでなく、C言語の *整理された*
+/// 機能をモデル化する F* ライブラリの集合です:
+/// それらはC言語のメモリモデル、スタック/ヒープに確保された配列、機種依存整数、
+/// C言語文字列リテラル、そして標準Cライブラリに対するいくつかのシステムレベル関数です。
 ///
-/// Writing in Low*, the programmer enjoys the full power of F* for proofs and
-/// specifications. At compile-time, proofs are erased, leaving only the
-/// low-level code to be compiled to C. In short:
+/// Low* を書くことで、プログラマは F* の証明と仕様記述の力を最大限享受できます。
+/// コンパイル時に証明は削除され、C言語へコンパイルされる低レベルコードだけが残ります。
+/// 要するに:
 ///
-/// .. centered:: **the code is low-level, but the verification is not**.
+/// .. centered:: **コードは低レベルだけれど、検証はそうではありません**。
 ///
-/// This manual offers a tour of Low* and its companion libraries; presents the
-/// tool KreMLin and the various ways it can be used to generate C programs or
-/// libraries; covers a few advanced examples.
+/// このマニュアルは Low* の概要とそのライブラリについて説明し;
+/// KreMLin ツールとC言語プログラムやライブラリを生成する様々な方法を示し;
+/// いくつかの高度な例を示します。
 ///
-/// Low* has been successfully used to write `HACL*
-/// <https://github.com/mitls/hacl-star>`_, a library of verified cryptographic
-/// primitives used in Firefox, the Linux Kernel and other projects.
+/// Low* は `HACL* <https://github.com/mitls/hacl-star>`_ を作成することに成功しています。
+/// このライブラリは Firefox、Linux カーネルやその他のプロジェクトから使用される検証された暗号プリミティブです。
 ///
-/// This tutorial assumes the reader is familiar with F*; if in doubt, head over
-/// to its `tutorial <https://fstar-lang.org/tutorial>`_.
+/// このチュートリアルは読者が F* を熟知していることを仮定しています;
+/// もし疑問があれば、F* の `チュートリアル <https://fstar-lang.org/tutorial>`_
+/// を読んでください。
+/// (訳注: 上記チュートリアルには日本語訳 http://fstar-ja.metasepi.org/doc/tutorial/ もあります。)
 ///
-/// The essence of Low*
-/// -------------------
+/// Low* のエッセンス
+/// ----------------
 ///
-/// The snippet below implements a classic ``memcpy`` function, copying ``len``
-/// elements of type ``a`` from ``src`` into ``dst``.
+/// 次のコードは古典的な ``memcpy`` 関数を実装しています。
+/// 型 ``a`` の ``len`` 要素を ``src`` から ``dst`` へコピーします。
 
 #set-options "--use_two_phase_tc true"
 

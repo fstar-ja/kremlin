@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath('../fstar-mode.el/etc/'))
 
 # -- Project information -----------------------------------------------------
 
-project = u'The KreMLin user manual'
+project = u'KreMLinユーザマニュアル'
 copyright = u'2018, Jonathan Protzenko'
 author = u'Jonathan Protzenko'
 

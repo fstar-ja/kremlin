@@ -1,8 +1,16 @@
-.PHONY: clean
+PUBLISH_DIR=$(HOME)/doc/fstar-ja.github.io/doc
+
+.PHONY: clean publish
 .DEFAULT: _build/html/index.html
 
 _build/html/index.html: conf.py index.rst Introduction.fst  LowStar.fst RingBuffer.fst
 	make html
 
+publish: _build/html/index.html
+	mkdir -p $(PUBLISH_DIR)
+	rm -rf $(PUBLISH_DIR)/kremlin-book
+	mkdir $(PUBLISH_DIR)/kremlin-book
+	cp -r _build/html/* $(PUBLISH_DIR)/kremlin-book/
+
 clean:
-	make clean
+	make clean && rm -rf _build

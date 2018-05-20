@@ -162,15 +162,15 @@ let main (): Stack C.exit_code
 ///
 /// .. warning::
 ///
-///    This tutorial is written using `fslit
-///    <https://github.com/FStarLang/fstar-mode.el/tree/master/etc/fslit>`_,
-///    meaning that this document is actually an F* source file converted to HTML.
-///    The present file is ``Introduction.fst`` and can be found in the ``book``
-///    directory of KreMLin. So, you can actually run the command above if you want
-///    to try things out for yourself!
+///    このチュートリアルは
+///    `fslit <https://github.com/FStarLang/fstar-mode.el/tree/master/etc/fslit>`_
+///    を使って書かれています。
+///    これはこのドキュメントがHTMLに変換できる F* ソースファイルであることを意味しています。
+///    このファイルは ``Introduction.fst`` で、KreMLin の ``book`` ディクトリに見つかるはずです。
+///    そのため、もしやってみたければ、自分で実際に実行することができます!
 ///
-/// This generates several C files in the current directory. The resulting
-/// ``Introduction.c`` is as follows.
+/// これでカレントディレクトリにいくつかのC言語ファイルが生成されます。
+/// 出力された ``Introduction.c`` は次のようになるでしょう。
 ///
 /// .. code-block:: c
 ///
@@ -196,18 +196,17 @@ let main (): Stack C.exit_code
 ///      return EXIT_SUCCESS;
 ///    }
 ///
-/// This informal presentation highlights several key design points of Low*.
+/// 上記は Low* の鍵となるデザインのいくつかを協調しています。
 ///
-/// - **A shallow embedding of C**. The programmer writes F* syntax, bearing in
-///   mind that it ought to compile to C, i.e. be in the Low* subset. We offer
-///   dedicated primitives, such as the ``C.Loops.for`` function, enabling
-///   fine-grained control over the generated C.
+/// - **C言語の shallow embedding**。プログラマはC言語へコンパイルされることを念頭にして、F* の構文を書きます。
+///   すなわちその構文は Low* サブセットです。
+///   私達は生成されたC言語にきめ細かい制御を可能にする ``C.Loops.for`` 関数のようなプリミティブを提供しています。
 ///
-/// - **A model of C**. The example above relies on modeling several C features in
-///   F*, such as bounded machine integers, stack-allocated arrays, and the
-///   separation between the stack and the heap. Dedicated combinators such as
-///   ``push_frame`` and ``pop_frame`` allow reflecting the structure of the call
-///   stack using F*'s built-in effect system.
+/// - **C言語のモデル**。上記の例は、境界のある機種依存得整数、
+///   スタックに確保された配列、スタックとヒープの分離といったような
+///   F* におけるいくつかのC言語の機能モデルに依存しています。
+///   ``push_frame`` や ``pop_frame`` のような特化したコンビネータは
+///   F* 組み込みの作用を使ってコールスタックの構造を考慮することができます。
 ///
 /// - **High-level verification of low-level code**. The example contains a vast
 ///   amount of specification, ranging from temporal safety (liveness) to

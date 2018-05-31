@@ -7,23 +7,21 @@ open LowStar.BufferOps
 
 /// .. _language-subset:
 ///
-/// The Low* subset of F*
-/// =====================
+/// F* のサブセットとしての Low*
+/// ===========================
 ///
-/// Low*, as formalized and presented in this `paper <https://arxiv.org/abs/1703.00053>`_,
-/// is the first-order lambda calculus. Base types are booleans and
-/// fixed-width integers. Low* has a primitive notion of *buffers* and pointer
-/// arithmetic within buffer bounds. In the formalization, structures are only
-/// valid when allocated within a buffer.
+/// この `論文 <https://arxiv.org/abs/1703.00053>`_ で形式化されている Low* は一階ラムダ計算です。
+/// 基本型はブールと固定幅整数です。
+/// Low* は *buffers* とバッファ境界中におけるポインタ演算のプリミティブを持っています。
+/// この形式化では、バッファ中に確保された場合のみ、構造体は有効です。
 ///
-/// This section describes Low* by example, showing valid and invalid
-/// constructs, to give the reader a good grasp of what syntactic subset of the
-/// F* language constitutes valid Low*.
+/// この章では有効と無効な例を使って Low* を説明します。
+/// F* のサブセットが有効な Low* どのように構成するのか、読者に把握してもらうことが狙いです。
 ///
-/// Some valid Low* constructs
-/// --------------------------
+/// いくつかの有効な Low* の例
+/// -------------------------
 ///
-/// Low*'s base types are machine integers.
+/// Low* の基本型は機種依存整数です。
 
 let square (x: UInt32.t): UInt32.t =
   let open FStar.UInt32 in
@@ -36,9 +34,9 @@ let square (x: UInt32.t): UInt32.t =
 ///      return x * x;
 ///    }
 ///
-/// Classic control-flow is, naturally, supported. One may use recursive
-/// functions if they wish to do so, modern versions of GCC are generally quite
-/// good at performing tail-call optimizations.
+/// 古典的なコントロールフローは当然サポートされています。
+/// 再帰関数を使いたいかもしれません。
+/// 近代の GCC は末尾再帰最適化を行ないます。
 
 let abs (x: Int32.t): Pure Int32.t
   (requires Int32.v x <> Int.min_int 32)
@@ -60,7 +58,7 @@ let abs (x: Int32.t): Pure Int32.t
 ///        return (int32_t)0 - x;
 ///    }
 ///
-/// Low* models stack allocation, which is covered in :ref:`buffer-library` below.
+/// Low* は次の :ref:`buffer-library` のようなスタック確保もモデル化します。
 
 let on_the_stack (): Stack UInt64.t (fun _ -> True) (fun _ _ _ -> True) =
   push_frame ();
@@ -80,7 +78,7 @@ let on_the_stack (): Stack UInt64.t (fun _ -> True) (fun _ _ _ -> True) =
 ///      return r;
 ///    }
 ///
-/// Similarly, Low* supports heap allocation.
+/// 同様に Low* はヒープ確保もサポートします。
 
 let on_the_heap (): St UInt64.t =
   let b = B.malloc HyperStack.root 0UL 64ul in
@@ -100,8 +98,8 @@ let on_the_heap (): St UInt64.t =
 ///      return r;
 ///    }
 ///
-/// Flat records are part of the original paper formalization, and are
-/// translated as regular C ``struct``\ s.
+/// フラットなレコードは先の論文で形式化されていて、それはC言語の ``struct``
+/// に変換されます。
 
 type uint128 = {
   low: UInt64.t;
@@ -117,7 +115,7 @@ type uint128 = {
 ///    }
 ///    uint128;
 ///
-/// In the original paper, structs may be allocated within buffers.
+/// 先の論文では構造体はバッファ中に確保されています。
 
 let uint128_alloc (h l: UInt64.t): St (B.buffer uint128) =
   B.malloc HyperStack.root ({ low = l; high = h }) 1ul
@@ -132,8 +130,7 @@ let uint128_alloc (h l: UInt64.t): St (B.buffer uint128) =
 ///      return buf;
 ///    }
 ///
-/// Still in the original paper, one may access a buffer index, then select a
-/// number of fields.
+/// また先の論文では、バッファのインデックスにアクセスでき、フィールドも選択できます。
 
 let uint128_high (x: B.buffer uint128): Stack UInt64.t
   (requires fun h -> B.live h x /\ B.length x = 1)
@@ -148,11 +145,10 @@ let uint128_high (x: B.buffer uint128): Stack UInt64.t
 ///      return x->high;
 ///    }
 ///
-/// One may define global constants too, as long as they evaluate to C
-/// constants. As a rough approximation, arithmetic expressions and addresses of
-/// other globals are C constants, but as always, the `C11 standard
-/// <http://open-std.org/jtc1/SC22/wg14/www/docs/n1548.pdf>`_ is the ultimate
-/// source of truth.
+/// C言語が定数を評価するのと同じようにグローバル定数を定義したいかもしれません。
+/// 概要としては、算術式と他のグローバルなアドレスはC言語の定数です。
+/// しかし常に `C11 標準
+/// <http://open-std.org/jtc1/SC22/wg14/www/docs/n1548.pdf>`_ が真実です。
 
 let min_int32 = FStar.Int32.(0l -^ 0x7fffffffl -^ 1l)
 
@@ -161,18 +157,18 @@ let min_int32 = FStar.Int32.(0l -^ 0x7fffffffl -^ 1l)
 ///    // Meta-evaluated by F*
 ///    int32_t min_int32 = (int32_t)-2147483648;
 ///
-/// Some extensions to Low*
-/// -----------------------
+/// Low* におけるいくつかの拡張
+/// --------------------------
 ///
-/// KreMLin supports a number of programming patterns beyond the original paper
-/// formalization, which aim to maximize programmer productivity. We now review
-/// the main ones.
+/// KreMLin は先の論文における形式化を超えていくつかのプログラミングパターンをサポートしています。
+/// それらはプログラマの生産性を最大化させます。
+/// ここでその主要なものを見てみましょう。
 ///
-/// One can rely on KreMLin to compile F*'s structural equality (the ``(=)``
-/// operator) to C functions specialized to each type. Furthermore, the function
-/// below demonstrates the use of a struct type as a value, which is
-/// straightforwardly compiled to a C structure passed by value. Be aware that doing
-/// so has performance implications (see ??).
+/// KreMLin は F* 構造的な等価性 (``(=)`` 演算子)
+/// をそれぞれの型に特化したC言語関数にコンパイルできます。
+/// さらに、以下の関数は構造体の型を値として使うことを示しています。
+/// この関数は値を渡されるC言語構造体に素直にコンパイルされます。
+/// パフォーマンスへの影響に気をつけてください (?? を参照)。
 
 let uint128_equal (x y: uint128) =
   x = y
@@ -189,9 +185,8 @@ let uint128_equal (x y: uint128) =
 ///      return __eq__LowStar_uint128(x, y);
 ///    }
 ///
-/// One may also use F* inductives, knowing that KreMLin will compile them as
-/// tagged unions, with a variety of optimized compilation schemes to make the
-/// generated code as palatable as possible.
+/// F* の帰納を使いたいかもしれません。
+/// KreMLin はそれら帰納をタグ付き共用体にコンパイルします。
 
 noeq
 type key =
@@ -214,7 +209,8 @@ type key =
 ///    key;
 ///
 /// Generally, KreMLin performs a whole-program monomorphization of
-/// parameterized data types. The example below demonstrates this, along with a
+/// parameterized data types.
+/// The example below demonstrates this, along with a
 /// "pretty" compilation scheme for the option type that does not involves an
 /// anonymous union.
 

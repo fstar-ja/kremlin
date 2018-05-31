@@ -38,7 +38,7 @@ let _ = LowStar.test_get
 /// このチュートリアルは読者が F* を熟知していることを仮定しています;
 /// もし疑問があれば、F* の `チュートリアル <https://fstar-lang.org/tutorial>`_
 /// を読んでください。
-/// (訳注: 上記チュートリアルには日本語訳 http://fstar-ja.metasepi.org/doc/tutorial/ もあります。)
+/// (訳注: 左記チュートリアルには日本語訳 http://fstar-ja.metasepi.org/doc/tutorial/ もあります。)
 ///
 /// Low* のエッセンス
 /// ----------------
@@ -208,94 +208,91 @@ let main (): Stack C.exit_code
 ///   ``push_frame`` や ``pop_frame`` のような特化したコンビネータは
 ///   F* 組み込みの作用を使ってコールスタックの構造を考慮することができます。
 ///
-/// - **High-level verification of low-level code**. The example contains a vast
-///   amount of specification, ranging from temporal safety (liveness) to
-///   spatial safety (disjointness, indices within bounds). Imperative data
-///   structures, such as buffers or machine integers, are reflected at the
-///   proof level with sequences and natural numbers respectively. This allows
-///   for a powerful specification style, which ultimately states that after
-///   calling ``memcpy``, the ``src`` and ``dst`` buffers are the same up to ``len``.
-///   All of this specification is erased, leaving only a succinct, low-level
-///   ``for``-loop.
+/// - **低レベルなコードに対する高レベルな検証**。 この例は一時的な安全性(活性)
+///   から(互いに素でインデックスが範囲外であるような)空間的な安全性に及ぶ
+///   膨大な量の仕様を含んでいます。
+///   バッファや機種依存整数のような命令的なデータ構造は、
+///   証明レベルではそれぞれシーケンスと自然数に反映されます。
+///   これは ``memcpy`` を呼び出した後に ``src`` と ``dst`` バッファが ``len``
+///   だけ同じであることを表明するような、強力な仕様スタイルを可能にします。
+///   この仕様の全ては消去され、簡潔な低レベルな ``for`` ループだけが残されます。
 ///
-/// - **Tooling support for programmer productivity**. The example relies on
-///   KreMLin to automatically generate monomorphic instance of the polymorphic
-///   ``memcpy`` function above. This is representative of a more general take:
-///   whenever there is a predictable compilation scheme for a high-level
-///   feature, KreMLin will provide support to enhance the programming
-///   experience. In Low*, one enjoys data types, pattern-matching, tuples,
-///   which are respectively compiled as C tagged unions, cascading
-///   ``if``\ s, or structures passed by value.
+/// - **プログラマの生産性のためのツールサポート**。 この例は KreMLin
+///   が上記の多相的な ``memcpy`` 関数を単相的なインスタンスを自動生成することに頼っています。
+///   高レベルなコンパイラの機能があったても、KreMLin
+///   はプログラミング体験の向上に貢献します。
+///   Low* ではデータ型、パターンマッチ、タプルを利用できます。
+///   それらはそれぞれC言語のタグ付き共用体、``if``
+///   の重なり、値によって渡される構造体にコンパイルされます。
 ///
-/// Tooling and setup
-/// -----------------
+/// ツールとセットアップ
+/// -------------------
 ///
-/// We now show how to get started with the tools and obtain a working F*/KreMLin
-/// pair.
+/// ツールの使い方を紹介し、動作する F*/KreMLin ペアを入手しましょう。
 ///
-/// KreMLin is intimately tied with F*:
+/// KreMLin は F* と親密に連携しています:
 ///
-/// - the ``master`` branch of KreMLin works with the ``stable`` branch of F*
-/// - the ``fstar-master`` branch of KreMLin works with the ``master`` branch of F*.
+/// - KreMLin の ``master`` ブランチは F* の ``stable`` ブランチと連携しています
+/// - KreMLin の ``fstar-master`` ブランチは F* の ``master`` ブランチと連携しています。
 ///
-/// Due to the fast-paced nature of F* development, this tutorial is kept
-/// up-to-date with the *latter* set of revisions, meaning that this tutorial
-/// expects the user to have:
+/// F* の急速な開発のために、このチュートリアルでは *後者* のリビジョンに追従します。
+/// これはこのチュートリアルが次のような読者を想定していることを意味しています:
 ///
-/// - an up-to-date version of F* ``master`` `built from source
-///   <https://github.com/FStarLang/FStar/blob/master/INSTALL.md>`__
-/// - an up-to-date version of KreMLin ``fstar-master``, `built from source
-///   <https://github.com/FStarLang/kremlin/tree/fstar-master/#trying-out-kremlin>`__
-/// - a C compiler in the path, preferably a recent version of GCC.
+/// - F* ``master`` ブランチの最新版を `ソースからビルド
+///   <https://github.com/FStarLang/FStar/blob/master/INSTALL.md>`__ していて
+/// - KreMLin ``fstar-master`` ブランチの最新版を `ソースからビルド
+///   <https://github.com/FStarLang/kremlin/tree/fstar-master/#trying-out-kremlin>`__ していて
+/// - パスにC言語コンパイラ、できれば最新のGCC、があること。
 ///
 /// .. note::
 ///
-///    On Windows, we expect the user to use the same setup as F*, i.e. a Cygwin
-///    environment with a `Windows OCaml
-///    <https://github.com/fdopen/opam-repository-mingw/>`_, along with the MinGW
-///    64-bit compilers installed *as cygwin packages*, i.e. the
-///    ``x86_64-w64-mingw32-gcc`` executable, along with the corresponding linker,
-///    archiver, etc.
+///    Windows では F* を同様に設定していることを想定します。
+///    すなわち `Windows OCaml
+///    <https://github.com/fdopen/opam-repository-mingw/>`_
+///    をともなった Cygwin 環境に MinGW 64-bit コンパイラが
+///    cygwin パッケージ ``x86_64-w64-mingw32-gcc``
+///    としてインストールされている必要があります。
 ///
-/// Usage of the KreMLin tool
-/// -------------------------
+/// KreMLin ツールの使い方
+/// ---------------------
 ///
-/// The KreMLin compiler comes as a command-line tool ``krml``. As a reminder, ``krml
-/// -help`` provides the list of options and warnings along with proper
-/// documentation.
+/// KreMLin コンパイラはコマンドラインツールの ``krml`` です。
+/// ``krml -help`` はオプションを警告のリストを表示することを覚えておいてください。
 ///
-/// The process of extracting from F* to C involves:
+/// F* からC言語へのエクストラクトのプロセスは次のようになります:
 ///
-/// 1. calling ``fstar.exe`` to generate a set of ``.krml`` files
-/// 2. calling ``krml`` on these files to generate a set of C files
-/// 3. calling the C compiler to generate an executable.
+/// 1. ``fstar.exe`` を呼び出して ``.krml`` ファイル群を生成し、
+/// 2. 上記のファイル群に ``krml`` を呼び出してC言語ファイル群を生成し、
+/// 3. C言語コンパイラを呼び出して実行ファイルを生成します。
 ///
-/// KreMLin can automate the first and last steps, and act as a driver for both F*
-/// and the C compiler, allowing for a quick edit-compile-cycle. For this present
-/// file, one may use:
+/// KreMLin は上記の最初と最後のを自動化でき、F*
+/// とC言語コンパイラ両方のドライバとしての機能を果たします。
+/// これによって編集/コンパイルを迅速に行なえます。
+/// 先のファイルについて、次のように使えます:
 ///
 /// .. code-block:: bash
 ///
 ///    $ krml introduction.fst -no-prefix Introduction -o test.exe && ./test.exe
 ///
-/// The present tutorial will use this mode exclusively, as it
-/// is much easier to use and allows trying out KreMLin without writing a
-/// substantial amount of ``Makefile``\ s. Furthermore, one can pass ``.c``, ``.h``,
-/// ``.o``, and ``.S`` files to KreMLin, to be included at the right step of the
-/// build, along with C linker and compiler options via KreMLin's ``-ccopt`` and
-/// ``-ldopt`` options.
+/// このチュートリアルではもっぱら上記のコマンドを使います。
+/// 上記は簡単に使えて、``Makefile`` を書かずに KreMLin を試用できるためです。
+/// さらにビルドの正しいステップでインクルードされるように
+/// ``.c``、``.h``、``.o`` そして ``.S`` ファイルを KreMLin に渡すことができます。
+/// C言語リンカとコンパイラオプションを KreMLin の ``-ccopt`` と ``-ldopt``
+/// オプションを通じて渡せます。
 ///
 /// .. fixme:: JP
 ///
 ///    Add a forward pointer to section 8.
 ///
-/// However, using KreMLin as a driver is inefficient for two reasons:
+/// けれども、KreMLin をドライバとして使うのは以下2つの点で効果的ではありません:
 ///
-/// - step 1 uses "legacy" extraction in F*: files are processed sequentially,
-///   without caching, and verification is by default not performed (use ``-verify``)
-/// - step 3 is not parallel
+/// - ステップ1では F* の "旧式" のエクストラクトを使います:
+///   ファイル群はシーケンシャルに処理され、キャッシュされません。
+///   さらにデフォルトでは検証は実行されません (``-verify`` を使う必要がります)
+/// - ステップ3が並列実行ではありません
 ///
-/// Section ?? provides a complete sample Makefile that performs parallel
-/// verification and extraction, along with parallel compilation of the resulting C
-/// code, using F*'s automated dependency analysis and ``gcc -MM`` for correct,
-/// incremental builds.
+/// ??章では、 検証とエクストラクトを並列で実行し、結果得られたC言語コードを並列にコンパイルする
+/// Makefile の具体的な例を提供します。
+/// 上記は F* の自動化された依存性解析と ``gcc -MM``
+/// を利用していて、インクリメンタルなビルドができます。
